@@ -98,6 +98,9 @@ class Paru implements PackageManager
 
     /**
      * Restart dnsmasq in Arch.
+     *
+     * @param \Valet\Contracts\ServiceManager $sm
+     * @return void
      */
     public function nmRestart($sm)
     {

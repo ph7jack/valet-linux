@@ -65,16 +65,13 @@ class ParuTest extends TestCase
     }
 
 
-    /**
-     * @expectedException DomainException
-     */
     public function test_install_or_fail_throws_exception_on_failure()
     {
         $this->expectException(DomainException::class);
 
         $cli = Mockery::mock(CommandLine::class);
         $cli->shouldReceive('run')->andReturnUsing(function ($command, $onError) {
-            $onError(1, 'test error ouput');
+            $onError(1, 'test error output');
         });
         swap(CommandLine::class, $cli);
         resolve(Paru::class)->installOrFail('dnsmasq');
