@@ -12,6 +12,7 @@ use Valet\PackageManagers\Eopkg;
 use Valet\PackageManagers\Homebrew;
 use Valet\PackageManagers\PackageKit;
 use Valet\PackageManagers\Pacman;
+use Valet\PackageManagers\Paru;
 use Valet\PackageManagers\Yum;
 use Valet\ServiceManagers\LinuxService;
 use Valet\ServiceManagers\Systemd;
@@ -126,6 +127,7 @@ class Valet
             Homebrew::class,
             Apt::class,
             Dnf::class,
+            Paru::class,
             Pacman::class,
             Yum::class,
             PackageKit::class,
