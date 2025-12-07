@@ -6,7 +6,7 @@ use DomainException;
 use Valet\CommandLine;
 use Valet\Contracts\PackageManager;
 
-class Pacman implements PackageManager
+class Paru implements PackageManager
 {
     public $cli;
 
@@ -22,7 +22,7 @@ class Pacman implements PackageManager
 
 
     /**
-     * Create a new Pacman instance.
+     * Create a new Paru instance.
      *
      * @param CommandLine $cli
      * @return void
@@ -40,7 +40,7 @@ class Pacman implements PackageManager
      */
     public function packages($package)
     {
-        $query = "pacman -Qqs {$package}";
+        $query = "paru -Qq {$package} 2>/dev/null || true";
 
         return explode(PHP_EOL, $this->cli->run($query));
     }
@@ -77,12 +77,12 @@ class Pacman implements PackageManager
      */
     public function installOrFail($package)
     {
-        output('<info>[' . $package . '] is not installed, installing it now via Pacman...</info> 🍻');
+        output('<info>[' . $package . '] is not installed, installing it now via Paru...</info> 🍻');
 
-        $this->cli->run(trim('pacman --noconfirm --needed -S ' . $package), function ($exitCode, $errorOutput) use ($package) {
+        $this->cli->run(trim('paru --noconfirm --needed -S ' . $package), function ($exitCode, $errorOutput) use ($package) {
             output($errorOutput);
 
-            throw new DomainException('Pacman was unable to install [' . $package . '].');
+            throw new DomainException('Paru was unable to install [' . $package . '].');
         });
     }
 
@@ -97,7 +97,7 @@ class Pacman implements PackageManager
     }
 
     /**
-     * Restart dnsmasq in Ubuntu.
+     * Restart dnsmasq in Arch.
      */
     public function nmRestart($sm)
     {
@@ -112,8 +112,8 @@ class Pacman implements PackageManager
     public function isAvailable()
     {
         try {
-            $output = $this->cli->run('which pacman', function ($exitCode, $output) {
-                throw new DomainException('Pacman not available');
+            $output = $this->cli->run('which paru', function ($exitCode, $output) {
+                throw new DomainException('Paru not available');
             });
 
             return $output != '';

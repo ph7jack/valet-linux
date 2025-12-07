@@ -8,6 +8,7 @@ use Valet\PackageManagers\Homebrew;
 use Valet\Contracts\ServiceManager;
 use Valet\PackageManagers\Dnf;
 use Valet\PackageManagers\Pacman;
+use Valet\PackageManagers\Paru;
 
 class PhpFpm
 {
@@ -375,7 +376,12 @@ class PhpFpm
         if (!$real && $this->files->exists(VALET_HOME_PATH . '/use_php_version')) {
             $version = $this->files->get(VALET_HOME_PATH . '/use_php_version');
         } else {
-            $version = explode('php', basename($this->files->readLink('/usr/bin/php')))[1];
+            if ($this->pm instanceof Paru || $this->pm instanceof Pacman) {
+                // For Arch Linux, get version from PHP runtime
+                $version = $this->normalizePhpVersion(PHP_VERSION);
+            } else {
+                $version = explode('php', basename($this->files->readLink('/usr/bin/php')))[1];
+            }
         }
 
         return $version;
@@ -546,6 +552,14 @@ class PhpFpm
 
         if ($this->pm instanceof Pacman) {
             return null;
+        }
+
+        if ($this->pm instanceof Paru) {
+            // For Paru, detect the PHP version from the current PHP runtime or config
+            if (!$this->version) {
+                $this->version = $this->normalizePhpVersion(PHP_VERSION);
+            }
+            return $this->version;
         }
 
         if (!$this->version) {
